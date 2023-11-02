@@ -14,4 +14,13 @@ const app = express();
 
 
 
-app.listen(PORT, () => console.log(`Listening at http:127.0.0.1:${PORT}`));
+const server = app.listen(PORT, () => console.log(`Listening at http:127.0.0.1:${PORT}`));
+
+//Handles server errors gracefully without crashing
+process.on("unhandledRejection", (err, promise) => {
+    console.log(`Logged Error: ${err}`);
+    server.close(() => process.exit(1));
+});
+
+
+
