@@ -32,7 +32,11 @@ const user_table = sequelize.define("user_table", {
     },
 
     resetPasswordToken: {
-        type: DataTypes.STRING(64)
+        type: DataTypes.STRING(64),
+
+        get() {
+            return this.getDataValue('resetPasswordToken');
+        }
     },
 
     resetPasswordExpire: {
