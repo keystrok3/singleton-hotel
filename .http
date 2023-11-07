@@ -3,9 +3,9 @@ POST http://127.0.0.1:5000/api/auth/register
 Content-Type: application/json
 
 {
-    "email": "testuser@gmail.com",
-    "firstName": "Test",
-    "lastName": "User",
+    "email": "jmreactive@proton.me",
+    "firstName": "Josiah",
+    "lastName": "M",
     "password": "pass123"
 }
 
@@ -17,6 +17,25 @@ POST http://127.0.0.1:5000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "testuser@gmail.com",
+    "email": "jmreactive@proton.me",
     "password": "pass123"
+}
+
+
+###
+
+POST http://127.0.0.1:5000/api/auth/forgotpassword
+Content-Type: application/json
+
+{
+    "email": "jmreactive@proton.me"
+}
+
+###
+
+PUT http://127.0.0.1:5000/api/auth/passwordreset/acf5a5c49916d090b4f08f4cf7ba4781924500f9f3c16949b354bfde3d4317f5
+Content-Type: application/json
+
+{ 
+    "password": "twpass123456"
 }

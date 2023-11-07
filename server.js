@@ -9,9 +9,9 @@ const { connectDB, sequelize } = require('./config/db');
 // Environment variables
 const PORT = process.env.PORT || 5000;
 
-connectDB();
+connectDB()
 
-sequelize.sync({ force: true })
+sequelize.sync()
     .then(() => {
         console.log("User table created successfully");
     })

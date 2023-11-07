@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const sendEmail = require("../utils/email");
+const { Op } = require("sequelize");
 
 
 const register = async (req, res, next) => {
@@ -91,10 +92,11 @@ const forgotPassword = async (req, res, next) => {
     const { email } = req.body;
 
     try {
-        const user = await user_table.findOne({ where: { "email": email }});
+        
+        const user = await user_table.findOne({ where: { email: email }});
 
         if(!user) {
-            return res.status(404).json({ success: false, msg: "Email could not be sent" });
+            return res.status(404).json({ success: false, msg: "User not found" });
         }
 
         //Generate token and save it to db
@@ -115,15 +117,61 @@ const forgotPassword = async (req, res, next) => {
                 to: user.email, 
                 subject: "Password reset request",
                 text: message
-            })
+            });
+
+            return res.status(201).json({ success: true, msg: "Email Sent" });
         } catch (error) {
-            
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpire = undefined;
+
+            await user.save();
+
+            return res.status(500).json({ success: false, msg: "Email could not be sent" });
         }
 
 
     } catch (error) {
-        
+        res.status(500).json({ success: false, msg: error.message });
     }
 };
 
-module.exports = { register, login };
+
+
+/**
+ * 1. Acquire reset token from request params of link sent via email.
+ * 2. Search database for users by resetToken.
+ * 3. If found get new password from request body and set it to new password
+ * 4. Set resetPasswordToken and resetPasswordExpire to `undefined`
+*/
+const resetPassword = async (req, res, next) => {
+    // const resetToken = crypto.createHash("sha256").update(req.params.resetToken).digest('hex');
+
+    const resetToken = req.params.resetToken;
+
+    console.log('\n\n\n\n', typeof resetToken)
+    try {
+        const user = await user_table.findOne({ where: {
+            resetPasswordToken: resetToken,
+            resetPasswordExpire: { [ Op.gt ]: Date.now() }
+        }});
+
+        
+        if(!user) {
+            
+            return res.status(400).json({ success: false, msg: "Invalid reset token" });
+        }
+    
+        user.password = req.body.password;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+    
+        await user.save();
+
+        res.status(201).json({ success: true, data: "Password reset success"});
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ success: false, msg: "Password reset unsuccessful" })
+    }
+}
+module.exports = { register, login, forgotPassword, resetPassword };
+

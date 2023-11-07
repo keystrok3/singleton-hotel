@@ -11,9 +11,6 @@ const user_table = sequelize.define("user_table", {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
-        validate: {
-            isEmail: { msg: "Must be a valid email address" }
-        }
     },
 
     firstName: {
@@ -40,7 +37,10 @@ const user_table = sequelize.define("user_table", {
     },
 
     resetPasswordExpire: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
+        set(value) {
+            this.setDataValue(value);
+        }
     }
 
 }, {
