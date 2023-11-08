@@ -102,7 +102,9 @@ const forgotPassword = async (req, res, next) => {
         //Generate token and save it to db
         const token = crypto.randomBytes(20).toString("hex");
         const resetToken = crypto.createHash('sha256').update(token).digest("hex");
+
         user.update({ resetPasswordToken: resetToken });
+        user.update({ resetPasswordExpire: new Date(Date.now() + 30*60*1000)}); // 30 minutes
 
         // Send token to email address
         const resetUrl = `http://localhost:3000/passwordreset/${resetToken}`;
@@ -152,16 +154,17 @@ const resetPassword = async (req, res, next) => {
     try {
         const user = await user_table.findOne({ where: {
             resetPasswordToken: resetToken,
-            resetPasswordExpire: { [ Op.gt ]: Date.now() }
-        }});
+            resetPasswordExpire: { [Op.gte]: Date.now() }
+       }});
 
         
         if(!user) {
             
             return res.status(400).json({ success: false, msg: "Invalid reset token" });
         }
-    
-        user.password = req.body.password;
+
+        let salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(req.body.password, salt);
         user.resetPasswordToken = undefined;
         user.resetPasswordExpire = undefined;
     
