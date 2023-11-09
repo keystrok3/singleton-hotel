@@ -103,9 +103,12 @@ const forgotPassword = async (req, res, next) => {
         const token = crypto.randomBytes(20).toString("hex");
         const resetToken = crypto.createHash('sha256').update(token).digest("hex");
 
-        user.update({ resetPasswordToken: resetToken });
-        user.update({ resetPasswordExpire: new Date(Date.now() + 30*60*1000)}); // 30 minutes
-
+        user.update({ 
+            resetPasswordToken: resetToken,
+            resetPasswordExpire: new Date(Date.now() + 30*60*1000) // 30 minutes
+        });
+        
+        
         // Send token to email address
         const resetUrl = `http://localhost:3000/passwordreset/${resetToken}`;
         const message = `
@@ -150,7 +153,6 @@ const resetPassword = async (req, res, next) => {
 
     const resetToken = req.params.resetToken;
 
-    console.log('\n\n\n\n', typeof resetToken)
     try {
         const user = await user_table.findOne({ where: {
             resetPasswordToken: resetToken,
@@ -164,9 +166,16 @@ const resetPassword = async (req, res, next) => {
         }
 
         let salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(req.body.password, salt);
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpire = undefined;
+        
+        // user.password = await bcrypt.hash(req.body.password, salt);
+        // user.resetPasswordToken = undefined;
+        // user.resetPasswordExpire = undefined;
+
+        user.update({
+            password: await bcrypt.hash(req.body.password, salt),
+            resetPasswordToken: undefined,
+            resetPasswordExpire: undefined
+        });
     
         await user.save();
 

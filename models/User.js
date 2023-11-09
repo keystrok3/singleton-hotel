@@ -38,9 +38,6 @@ const user_table = sequelize.define("user_table", {
 
     resetPasswordExpire: {
         type: DataTypes.DATE,
-        set(value) {
-            this.setDataValue(value);
-        }
     }
 
 }, {

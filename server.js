@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 5000;
 
 connectDB()
 
-sequelize.sync()
+sequelize.sync({ force: true })
     .then(() => {
         console.log("User table created successfully");
     })

@@ -18,7 +18,7 @@ Content-Type: application/json
 
 {
     "email": "jmreactive@proton.me",
-    "password": "twpass123456"
+    "password": "2rpass123456"
 }
 
 
@@ -33,9 +33,9 @@ Content-Type: application/json
 
 ###
 
-PUT http://127.0.0.1:5000/api/auth/passwordreset/4197b345c1f08b82ec9f71a6b1b14eda45cd8a1104a042b0812adbe2a4fed1ac
+PUT http://127.0.0.1:5000/api/auth/passwordreset/f060f91411e141d439853c9e191cee71c1175933d7f768d462bc11392191de45 
 Content-Type: application/json
 
 { 
-    "password": "rrpass123456"
+    "password": "2rpass123456"
 }
