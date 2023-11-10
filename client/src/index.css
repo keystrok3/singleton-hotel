@@ -1,0 +1,14 @@
+
+:root {
+    box-sizing: border-box;
+}
+
+* {
+    box-sizing: inherit;
+    margin: 0;
+}
+
+/* Primary Color: some shade of blue */
+body {
+    background-color: #f5f5f5;
+}
