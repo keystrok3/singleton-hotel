@@ -4,6 +4,7 @@
 require('dotenv').config({ path: './config.env' });
 
 const express = require('express');
+const cors = require('cors');
 const { connectDB, sequelize } = require('./config/db');
 
 // Environment variables
@@ -22,6 +23,7 @@ sequelize.sync({ force: true })
 const app = express();
 
 // middleware
+app.use(cors())
 app.use(express.json());
 app.use('/api/auth', require('./routes/auth'));
 

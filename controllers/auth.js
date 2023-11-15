@@ -11,10 +11,14 @@ const register = async (req, res, next) => {
     
     const { email, firstName, lastName, password } = req.body;
 
+    if(!email || !firstName || !lastName || !password) {
+        return res.status(400).json({ success: false, message: "There's a problem with the request body" });
+    }
+    
     try {
 
         const salt = await bcrypt.genSalt(10);
-        let hashedpassword = await bcrypt.hash(password, salt);
+        const hashedpassword = await bcrypt.hash(password, salt);
         
         const user = await user_table.create({ 
             firstName: firstName, 

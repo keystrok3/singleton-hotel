@@ -1,0 +1,16 @@
+
+
+.login {
+    width: 100%;
+}
+
+.login-in-form {
+    width: 50%;
+    margin: 4rem auto;
+}
+
+.login-in-form > div {
+    display: flex;
+    justify-content: center;
+    margin: .5em 0;
+}
